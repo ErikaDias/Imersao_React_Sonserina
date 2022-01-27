@@ -1,34 +1,9 @@
 import { Box, Button, Text, TextField, Image } from '@skynexui/components';
 import appConfig from '../config.json'
-
-function GlobalStyle() {
-    return (
-        <style global jsx>{`
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          list-style: none;
-        }
-        body {
-          font-family: 'Open Sans', sans-serif;
-        }
-        /* App fit Height */ 
-        html, body, #__next {
-          min-height: 100vh;
-          display: flex;
-          flex: 1;
-        }
-        #__next {
-          flex: 1;
-        }
-        #__next > * {
-          flex: 1;
-        }
-        /* ./App fit Height */ 
-      `}</style>
-    );
-}
+import React from 'react';
+import { useRouter } from 'next/router'
+import Github from '../images/github.png'
+import { getURL } from 'next/dist/shared/lib/utils';
 
 function Titulo(props) {
     const Tag = props.tag || 'h1';
@@ -59,11 +34,21 @@ function Titulo(props) {
 // export default HomePage
 
 export default function PaginaInicial() {
-    const username = 'ErikaDias';
+
+    // const username = 'ErikaDias';
+    const [username, setUsername] = React.useState('');
+    const [bio, setBio] = React.useState('');
+    const roteamento = useRouter();
+
+    // React.useEffect(() => {
+    fetch(`https://api.github.com/users/${username}`)
+        .then((response) => response.json())
+        .then(data => { setBio(data.bio) })
+    // }, [username])
 
     return (
         <>
-            <GlobalStyle />
+
             <Box
                 styleSheet={{
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -90,6 +75,10 @@ export default function PaginaInicial() {
                     {/* Formulário */}
                     <Box
                         as="form"
+                        onSubmit={function (infoEvet) {
+                            infoEvet.preventDefault();
+                            roteamento.push('/chat');
+                        }}
                         styleSheet={{
                             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                             width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
@@ -101,6 +90,11 @@ export default function PaginaInicial() {
                         </Text>
 
                         <TextField
+                            value={username}
+                            onChange={function (event) {
+                                const valor = event.target.value;
+                                setUsername(valor);
+                            }}
                             fullWidth
                             textFieldColors={{
                                 colors: {
@@ -146,7 +140,8 @@ export default function PaginaInicial() {
                                 borderRadius: '50%',
                                 marginBottom: '16px',
                             }}
-                            src={`https://github.com/${username}.png`}
+                            // src={`https://github.com/${username}.png`}
+                            src={username.length > 2 ? `https://github.com/${username}.png` : `https://github.com/github.png`}
                         />
                         <Text
                             variant="body4"
@@ -159,7 +154,20 @@ export default function PaginaInicial() {
                                 borderColor: appConfig.theme.colors.primary['300'],
                             }}
                         >
-                            {username}
+                            <Box
+                                styleSheet={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    textAlign: 'center',
+                                }}>
+                                <Box>
+                                    {username.length > 2 ? username : 'Digite o nome do usuário!'}
+                                </Box>
+                                <Box>
+                                    {/* Front end Developer Student | HTML | CSS | JavaScript. */}
+                                    {bio}
+                                </Box>
+                            </Box>
                         </Text>
                     </Box>
                     {/* Photo Area */}
@@ -167,4 +175,7 @@ export default function PaginaInicial() {
             </Box>
         </>
     );
+
+
+
 }
