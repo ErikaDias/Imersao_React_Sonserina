@@ -1,9 +1,11 @@
+//Usando os componentes da lib @skynexui
 import { Box, Button, Text, TextField, Image } from '@skynexui/components';
+// Importanto arquivo de configuração de cores e stickers 
 import appConfig from '../config.json'
+// Importação do React
 import React from 'react';
+// Importanto roteamento do next
 import { useRouter } from 'next/router'
-import Github from '../images/github.png'
-import { getURL } from 'next/dist/shared/lib/utils';
 
 function Titulo(props) {
     const Tag = props.tag || 'h1';
@@ -21,38 +23,26 @@ function Titulo(props) {
     );
 }
 
-// // Componente React
-// function HomePage() {
-//     return (
-//         <div>
-//             <GlobalStyle />
-//             <Titulo tag="h2">Boa vindas de volta!</Titulo>
-//             <h2>Discord - Alura Matrix</h2>
-//         </div>
-//     )
-// }
-// export default HomePage
-
 export default function PaginaInicial() {
 
-    // const username = 'ErikaDias';
     const [username, setUsername] = React.useState('');
-    const [bio, setBio] = React.useState('');
+    const [bio, setBio] = React.useState();
     const roteamento = useRouter();
 
-    // React.useEffect(() => {
     fetch(`https://api.github.com/users/${username}`)
-        .then((response) => response.json())
-        .then(data => { setBio(data.bio) })
-    // }, [username])
+        .then((response) => {
+            if (response.status === 200) {
+                response.json()
+                    .then(data => { setBio(data.bio) })
+            }
+        });
 
     return (
         <>
-
             <Box
                 styleSheet={{
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    backgroundColor: appConfig.theme.colors.primary['400'],
+                    backgroundColor: appConfig.theme.colors.primary['200'],
                     backgroundImage: 'url(https://cdn.bhdw.net/im/slytherin-house-white-and-green-banner-papel-de-parede-58921_w635.jpg)',
                     backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
                 }}
@@ -69,15 +59,16 @@ export default function PaginaInicial() {
                         width: '100%', maxWidth: '700px',
                         borderRadius: '5px', padding: '32px', margin: '16px',
                         boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
-                        backgroundColor: appConfig.theme.colors.neutrals[600],
+                        backgroundColor: appConfig.theme.colors.primary['1000'],
                     }}
                 >
                     {/* Formulário */}
                     <Box
+                        //O onSubmit faz o roteamento usando hooks do next informando o usuario pela url
                         as="form"
                         onSubmit={function (infoEvet) {
                             infoEvet.preventDefault();
-                            roteamento.push('/chat');
+                            roteamento.push(`/chat?username=${username}`);
                         }}
                         styleSheet={{
                             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
@@ -92,7 +83,9 @@ export default function PaginaInicial() {
                         <TextField
                             value={username}
                             onChange={function (event) {
+                                // Onde está o valor
                                 const valor = event.target.value;
+                                // Set um novo valor para o campo
                                 setUsername(valor);
                             }}
                             fullWidth
@@ -128,7 +121,7 @@ export default function PaginaInicial() {
                             maxWidth: '220px',
                             minHeight: '240px',
                             padding: '16px',
-                            backgroundColor: appConfig.theme.colors.neutrals['600'],
+                            backgroundColor: appConfig.theme.colors.primary['1000'],
                             border: '1px solid',
                             borderColor: appConfig.theme.colors.primary['300'],
                             borderRadius: '10px',
@@ -140,14 +133,14 @@ export default function PaginaInicial() {
                                 borderRadius: '50%',
                                 marginBottom: '16px',
                             }}
-                            // src={`https://github.com/${username}.png`}
+                            //Operador ternario para mostrar imagem do git antes da pesquisar por algun usuário.
                             src={username.length > 2 ? `https://github.com/${username}.png` : `https://github.com/github.png`}
                         />
                         <Text
                             variant="body4"
                             styleSheet={{
                                 color: appConfig.theme.colors.neutrals['200'],
-                                backgroundColor: appConfig.theme.colors.neutrals['800'],
+                                backgroundColor: appConfig.theme.colors.primary['1000'],
                                 padding: '3px 10px',
                                 borderRadius: '10px',
                                 border: '1px solid',
@@ -163,8 +156,8 @@ export default function PaginaInicial() {
                                 <Box>
                                     {username.length > 2 ? username : 'Digite o nome do usuário!'}
                                 </Box>
+                                {/* Mostrar a bio do usuário no github */}
                                 <Box>
-                                    {/* Front end Developer Student | HTML | CSS | JavaScript. */}
                                     {bio}
                                 </Box>
                             </Box>
@@ -175,7 +168,4 @@ export default function PaginaInicial() {
             </Box>
         </>
     );
-
-
-
 }
