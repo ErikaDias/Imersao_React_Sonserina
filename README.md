@@ -37,4 +37,4 @@ Projeto criado na Imersão React onde criamos um clone do discord personalizado.
 
 <br>
 
-Link do projeto: <strong><a href="#">Aluracord - Sonserina</a></strong>
+Link do projeto: <strong><a href="https://imersao-react-sonserina.vercel.app">Aluracord - Sonserina</a></strong>
