@@ -36,5 +36,3 @@ Projeto criado na Imersão React onde criamos um clone do discord personalizado.
 -   SkynexUi
 
 <br>
-
-Link do projeto: <strong><a href="https://imersao-react-sonserina.vercel.app" target="_blank" rel="noopener noreferrer">Aluracord - Sonserina</a></strong>
